@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acceso - Sistema de Fichas Técnicas</title>
+    <!-- Fuente moderna -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+    <div class="login-card">
+        <h2 id="titulo">Iniciar sesión</h2>
+        <p class="subtitulo">Secretaría de Bienestar e Inclusión Social</p>
+
+        <form id="formLogin">
+            <div class="form-group">
+                <label>Usuario:</label>
+                <input type="text" name="usuario" placeholder="Escribe tu usuario" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña:</label>
+                <input type="password" name="clave" placeholder="Escribe tu contraseña" required autocomplete="current-password">
+            </div>
+
+            <div id="filaConfirma" class="form-group" style="display:none">
+                <label>Confirmar contraseña:</label>
+                <input type="password" id="confirma" placeholder="Repite tu contraseña" autocomplete="new-password">
+            </div>
+
+            <button type="submit" id="boton" class="btn-guinda">Entrar</button>
+
+            <div class="footer-links">
+                <a href="#" id="enlace">¿No tienes cuenta? Crear una</a>
+            </div>
+
+            <p id="mensaje" class="error-msg"></p>
+        </form>
+    </div>
+
+<script>
+let modoRegistro = false;
+const form = document.getElementById('formLogin');
+const msg = document.getElementById('mensaje');
+const confirma = document.getElementById('confirma');
+
+function actualizar() {
+    document.getElementById('titulo').textContent = modoRegistro ? 'Crear cuenta' : 'Iniciar sesión';
+    document.getElementById('filaConfirma').style.display = modoRegistro ? 'block' : 'none';
+    confirma.required = modoRegistro;
+    document.getElementById('boton').textContent = modoRegistro ? 'Crear cuenta y entrar' : 'Entrar';
+    document.getElementById('enlace').textContent = modoRegistro ? 'Ya tengo cuenta: iniciar sesión' : '¿No tienes cuenta? Crear una';
+    msg.textContent = '';
+}
+
+document.getElementById('enlace').addEventListener('click', function (e) {
+    e.preventDefault();
+    modoRegistro = !modoRegistro;
+    actualizar();
+});
+
+form.addEventListener('submit', async function (e) {
+    e.preventDefault();                    // evita que la página se recargue
+    msg.textContent = '';
+    const datos = new FormData(form);
+    if (modoRegistro && datos.get('clave') !== confirma.value) {
+        msg.textContent = 'Las contraseñas no coinciden.';
+        return;
+    }
+    try {
+        const url = modoRegistro ? 'php/registrar.php' : 'php/autenticar.php';
+        const r = await fetch(url, { method: 'POST', body: datos });
+        const texto = await r.text();
+        let j;
+        try { j = JSON.parse(texto); }
+        catch (err) {
+            msg.textContent = 'Respuesta inesperada del servidor: ' + texto.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
+            return;
+        }
+        if (j.ok) {
+            location.href = 'menu.html';      // aquí ocurre la redirección
+        } else {
+            msg.textContent = j.error || 'No se pudo completar.';
+        }
+    } catch (err) {
+        msg.textContent = 'No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.';
+    }
+});
+</script>
+
+</body>
+</html>

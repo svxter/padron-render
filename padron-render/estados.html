@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bienes por estado</title>
+<link rel="stylesheet" href="css/estados.css">
+</head>
+<body>
+<div class="barra">
+  <a href="menu.html">← Menú</a>
+  <strong>Bienes por estado</strong>
+</div>
+
+<div class="contenido">
+  <div class="tabs" id="tabs"></div>
+
+  <div class="herramientas">
+    <input type="text" id="buscar" placeholder="Buscar número de inventario" autocomplete="off">
+    <span id="info"></span>
+  </div>
+
+  <table class="lista">
+    <thead><tr><th>Número de inventario</th><th>Estado</th><th></th></tr></thead>
+    <tbody id="filas"></tbody>
+  </table>
+
+  <div class="paginas">
+    <button id="ant">← Anterior</button>
+    <span id="pag"></span>
+    <button id="sig">Siguiente →</button>
+  </div>
+</div>
+
+<script src="js/sesion.js"></script>
+<script src="js/estados.js"></script>
+</body>
+</html>

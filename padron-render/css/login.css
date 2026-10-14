@@ -1,0 +1,107 @@
+
+.login-card {
+    background: #ffffff;
+    padding: 100px 155px;
+    border-radius: 100px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+    width: 100%;
+    max-width: 400px; 
+    text-align: center;
+    border-top: 6px solid var(--guinda); 
+}
+
+.login-card h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--texto);
+    text-align: center;
+}
+
+.subtitulo-login {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+
+.login-card .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.login-card label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+}
+
+
+.login-card input[type=text], 
+.login-card input[type=password] {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #f9f9f9;
+    transition: border-color 0.3s, background 0.3s;
+    box-sizing: border-box; 
+}
+
+
+.login-card input[type=text]:focus, 
+.login-card input[type=password]:focus {
+    outline: none;
+    border-color: var(--guinda);
+    background: #d5d2d2;
+}
+
+
+.login-card .btn-guinda {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    background: var(--guinda);
+    color: #000000;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+    margin-top: 10px;
+}
+
+.login-card .btn-guinda:hover {
+    background: #74243b; 
+}
+
+.login-card .btn-guinda:active {
+    transform: scale(0.98); 
+}
+
+/* Mensaje de error */
+.login-card .error-login {
+    color: #b00020;
+    font-size: 13px;
+    margin-bottom: 15px;
+    min-height: 18px; 
+}
+
+
+.login-card .footer-links {
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.login-card .footer-links a {
+    color: var(--guinda);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.login-card .footer-links a:hover {
+    text-decoration: underline;
+}
