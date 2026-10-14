@@ -18,12 +18,6 @@ function conectar() {
     parse_str($p['query'] ?? '', $q);
     $dsn = sprintf('pgsql:host=%s;port=%d;dbname=%s;sslmode=%s',
         $p['host'], $p['port'] ?? 5432, ltrim($p['path'] ?? '/neondb', '/'), $q['sslmode'] ?? 'require');
-    // Neon identifica el proyecto por el nombre del host; se envía también como "endpoint"
-    // para clientes cuya librería no soporte SNI.
-    $endpoint = explode('.', $p['host'])[0];
-    if (str_starts_with($endpoint, 'ep-')) {
-        $dsn .= ";options='endpoint=" . preg_replace('/-pooler$/', '', $endpoint) . "'";
-    }
 
     $pdo = new PDO($dsn, urldecode($p['user'] ?? ''), urldecode($p['pass'] ?? ''), [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
