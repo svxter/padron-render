@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') fallo(405, 'Solicitud no válida.');
 
 $inv    = trim($_POST['inv'] ?? '');
 $estado = strtoupper(trim($_POST['estado'] ?? ''));
-$validos = ['BUENO', 'REGULAR', 'MALO', 'INSERVIBLE'];
+$validos = ['BUENO', 'REGULAR', 'MALO', 'BAJA'];
 
 if ($inv === '') fallo(400, 'Falta el número de inventario.');
 if ($estado !== '' && !in_array($estado, $validos, true)) fallo(400, 'Estado no válido.');
