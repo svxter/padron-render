@@ -1,96 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Acceso - Sistema de Fichas Técnicas</title>
-    <!-- Fuente moderna -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/login.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha técnica de bien mueble</title>
+<link rel="stylesheet" href="css/ficha.css">
 </head>
 <body>
+<div class="barra">
+  <a href="menu.html">← Menú</a>
+  <label>Número de inventario <input type="text" id="inv" autofocus autocomplete="off"></label>
+  <button id="btnBuscar">Buscar</button>
+  <button id="btnGuardar">Guardar</button>
+  <button class="sec" id="btnImprimir">Imprimir</button>
+  <button class="sec" id="btnLimpiar">Nueva ficha</button>
+  <span id="mensaje"></span>
+</div>
 
-    <div class="login-card">
-        <h2 id="titulo">Iniciar sesión</h2>
-        <p class="subtitulo">Secretaría de Bienestar e Inclusión Social</p>
+<div class="hoja">
+  <div class="logo">
+    <img src="img/logo2.png" alt="Logotipo Secretaría de Bienestar e Inclusión Social" class="logo-img">
+  </div>
+  
+  <h1>FICHA TÉCNICA DE BIEN MUEBLE</h1>
 
-        <form id="formLogin">
-            <div class="form-group">
-                <label>Usuario:</label>
-                <input type="text" name="usuario" placeholder="Escribe tu usuario" required autocomplete="username">
-            </div>
+  <table class="datos">
+    <tr><th>Número de inventario</th><th>Descripción</th><th>Marca</th><th>Modelo</th><th>Serie</th><th>Material</th><th>Color</th><th>Agrupados</th></tr>
+    <tr><td id="f_inventario"></td><td id="f_descripcion"></td><td id="f_marca"></td><td id="f_modelo"></td><td id="f_serie"></td><td id="f_material"></td><td id="f_color"></td><td id="f_agrupados"></td></tr>
+  </table>
+  <table class="datos">
+    <tr><th>Órgano superior<br>Resguardante actual</th><th>Unidad presupuestal<br>Resguardante actual</th><th>Adscripción</th><th>Ubicación</th></tr>
+    <tr><td id="f_organo_superior"></td><td id="f_unidad_presupuestal"></td><td id="f_adscripcion"></td><td id="f_ubicacion"></td></tr>
+  </table>
+  <table class="datos">
+    <tr><th>Fecha adquisición</th><th>Monto original</th><th>COG</th><th>CVE armonizada</th><th>Resguardo</th><th>Estatus contable</th></tr>
+    <tr><td id="f_fecha"></td><td id="f_monto"></td><td id="f_cog"></td><td id="f_cve_armonizada"></td><td id="f_patrimoniable"></td><td>
+      <select id="estatus_contable">
+        <option value="">Seleccionar…</option>
+        <option>BUENO</option>
+        <option>REGULAR</option>
+        <option>MALO</option>
+        <option>INSERVIBLE</option>
+      </select>
+    </td></tr>
+  </table>
 
-            <div class="form-group">
-                <label>Contraseña:</label>
-                <input type="password" name="clave" placeholder="Escribe tu contraseña" required autocomplete="current-password">
-            </div>
+  <h2>MEMORIA FOTOGRÁFICA</h2>
+  <div class="fotos">
+    <label class="foto"><span class="vacio">FOTO DEL BIEN MUEBLE<br>(sube aquí la foto del número de inventario)<input type="file" accept="image/*" data-foto></label>
+    <label class="foto"><span class="vacio">FOTO DEL BIEN MUEBLE<br>(sube aquí la foto de enfrente del bien)</span><input type="file" accept="image/*" data-foto></label>
+    <label class="foto"><span class="vacio">FOTO DEL BIEN MUEBLE<br>(sube aquí la foto de costado del bien)</span><input type="file" accept="image/*" data-foto></label>
+  </div>
 
-            <div id="filaConfirma" class="form-group" style="display:none">
-                <label>Confirmar contraseña:</label>
-                <input type="password" id="confirma" placeholder="Repite tu contraseña" autocomplete="new-password">
-            </div>
-
-            <button type="submit" id="boton" class="btn-guinda">Entrar</button>
-
-            <div class="footer-links">
-                <a href="#" id="enlace">¿No tienes cuenta? Crear una</a>
-            </div>
-
-            <p id="mensaje" class="error-msg"></p>
-        </form>
+ <div class="firmas">
+    <!-- FIRMA 1: ELABORÓ -->
+    <div class="firma">
+      <div class="titulo-firma">ELABORÓ</div>
+      <div class="cuerpo-firma">
+        <div class="linea-firma"></div>
+        <div class="nombre-fijo">C. Victor Hugo Perez Guati Rojo</div>
+        <span class="puesto-firma">DIRECTOR DE RECURSOS MATERIALES DE LA COORDINACIÓN ADMINISTRATIVA DE LA SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL</span>
+      </div>
     </div>
 
-<script>
-let modoRegistro = false;
-const form = document.getElementById('formLogin');
-const msg = document.getElementById('mensaje');
-const confirma = document.getElementById('confirma');
+    <!-- FIRMA 2: VALIDÓ (Con nombre fijo de la Mtra. Rosa Leticia) -->
+    <div class="firma">
+      <div class="titulo-firma">VALIDÓ</div>
+      <div class="cuerpo-firma">
+        <div class="linea-firma"></div>
+        <div class="nombre-fijo">Mtra. Rosa Leticia Muñoz Chávez</div>
+        <span class="puesto-firma">COORDINADORA ADMINISTRATIVA DE LA COORDINACIÓN ADMINISTRATIVA DE LA SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL</span>
+      </div>
+    </div>
 
-function actualizar() {
-    document.getElementById('titulo').textContent = modoRegistro ? 'Crear cuenta' : 'Iniciar sesión';
-    document.getElementById('filaConfirma').style.display = modoRegistro ? 'block' : 'none';
-    confirma.required = modoRegistro;
-    document.getElementById('boton').textContent = modoRegistro ? 'Crear cuenta y entrar' : 'Entrar';
-    document.getElementById('enlace').textContent = modoRegistro ? 'Ya tengo cuenta: iniciar sesión' : '¿No tienes cuenta? Crear una';
-    msg.textContent = '';
-}
+    
+    <div class="firma">
+      <div class="titulo-firma">V.O. B.O.</div>
+      <div class="cuerpo-firma">
+        <div class="linea-firma"></div>
+        <div class="nombre-fijo">Mtro. Ricardo Gomez Moreno</div>
+        <span class="puesto-firma">SECRETARIO DE BIENESTAR E INCLUSIÓN SOCIAL</span>
+      </div>
+    </div>
+  </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/fichatecnica.js"></script>
 
-document.getElementById('enlace').addEventListener('click', function (e) {
-    e.preventDefault();
-    modoRegistro = !modoRegistro;
-    actualizar();
-});
-
-form.addEventListener('submit', async function (e) {
-    e.preventDefault();                    // evita que la página se recargue
-    msg.textContent = '';
-    const datos = new FormData(form);
-    if (modoRegistro && datos.get('clave') !== confirma.value) {
-        msg.textContent = 'Las contraseñas no coinciden.';
-        return;
-    }
-    try {
-        const url = modoRegistro ? 'php/registrar.php' : 'php/autenticar.php';
-        const r = await fetch(url, { method: 'POST', body: datos });
-        const texto = await r.text();
-        let j;
-        try { j = JSON.parse(texto); }
-        catch (err) {
-            msg.textContent = 'Respuesta inesperada del servidor: ' + texto.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
-            return;
-        }
-        if (j.ok) {
-            location.href = 'menu.html';      // aquí ocurre la redirección
-        } else {
-            msg.textContent = j.error || 'No se pudo completar.';
-        }
-    } catch (err) {
-        msg.textContent = 'No se pudo llegar al servidor. Abre la página con http://localhost/... y revisa que Apache esté encendido.';
-    }
-});
-</script>
+<div id="modalInventario" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <h3>Aviso del Sistema</h3>
+    <p>Este número de inventario ya fue creado. ¿Quieres volver a crear otra ficha?</p>
+    <div class="modal-botones">
+      <button id="modalBtnAceptar" class="btn-aceptar">Aceptar</button>
+      <button id="modalBtnCancelar" class="btn-cancelar">Cancelar</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
