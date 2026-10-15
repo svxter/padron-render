@@ -26,6 +26,7 @@ table.lista td:last-child { text-align:right; }
 .chip.REGULAR { background:#fff2cc; color:#8a6500; }
 .chip.MALO { background:#ffe0cc; color:#a14a00; }
 .chip.INSERVIBLE { background:#f8d7da; color:#a1001f; }
+.chip.BAJA { background:#e3e3e8; color:#444; }
 .chip.SIN { background:#eee; color:#666; }
 
 .ver { display:inline-block; padding:6px 12px; font-size:13px; color:#fff; background:var(--guinda); border-radius:4px; text-decoration:none; }
@@ -35,3 +36,13 @@ table.lista td:last-child { text-align:right; }
 .paginas button { padding:7px 14px; border:0; border-radius:4px; background:#555; color:#fff; cursor:pointer; }
 .paginas button:disabled { opacity:.4; cursor:default; }
 .vacio { text-align:center; color:#777; padding:24px; }
+
+/* ---- Selección y PDF ---- */
+.seleccion { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:6px 0 10px; }
+.seleccion button { padding:8px 14px; font-size:13px; border:0; border-radius:5px; background:var(--guinda); color:#fff; cursor:pointer; }
+.seleccion button.sec { background:#555; }
+.seleccion button.pdf { margin-left:auto; }
+.seleccion button:disabled { opacity:.4; cursor:default; }
+#progreso { font-size:13px; color:#555; }
+table.lista th.col-sel, table.lista td.col-sel { width:40px; text-align:center; }
+table.lista td.col-sel input, table.lista th.col-sel input { width:18px; height:18px; cursor:pointer; }

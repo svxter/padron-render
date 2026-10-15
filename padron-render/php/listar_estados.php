@@ -13,7 +13,7 @@ $pdo = conectar();
 asegurarEstado($pdo);
 
 
-$conteos = ['BUENO' => 0, 'REGULAR' => 0, 'MALO' => 0, 'BAJA' => 0, 'SIN' => 0];
+$conteos = ['BUENO' => 0, 'REGULAR' => 0, 'MALO' => 0, 'INSERVIBLE' => 0, 'SIN' => 0];
 foreach ($pdo->query("SELECT COALESCE(estado_bien, 'SIN') AS e, COUNT(*) AS n FROM bienes GROUP BY e") as $f) {
     if (isset($conteos[$f['e']])) $conteos[$f['e']] = (int) $f['n'];
 }
@@ -28,8 +28,20 @@ $desde  = ($pagina - 1) * $por;
 $donde = []; $params = [];
 if ($estado === 'SIN') { $donde[] = 'estado_bien IS NULL'; }
 else { $donde[] = 'estado_bien = ?'; $params[] = $estado; }
-if ($q !== '') { $donde[] = 'inventario ILIKE ?'; $params[] = '%' . $q . '%'; }
+if ($q !== '') { $donde[] = 'inventario LIKE ?'; $params[] = '%' . $q . '%'; }
+
+
 $where = implode(' AND ', $donde);
+
+
+if (isset($_GET['todos'])) {
+    $st = $pdo->prepare("SELECT inventario FROM bienes WHERE $where ORDER BY LENGTH(inventario), inventario");
+    $st->execute($params);
+    echo json_encode(['inventarios' => $st->fetchAll(PDO::FETCH_COLUMN)], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$st = $pdo->prepare("SELECT COUNT(*) FROM bienes WHERE $where");
 
 $st = $pdo->prepare("SELECT COUNT(*) FROM bienes WHERE $where");
 $st->execute($params);

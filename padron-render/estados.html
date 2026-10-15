@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bienes por estado</title>
+<link rel="stylesheet" href="css/ficha.css">
 <link rel="stylesheet" href="css/estados.css">
 </head>
 <body>
@@ -20,8 +21,18 @@
     <span id="info"></span>
   </div>
 
+  <div class="seleccion">
+    <button id="btnSelTodos">Seleccionar todos de este apartado</button>
+    <button id="btnQuitar" class="sec">Quitar selección</button>
+    <button id="btnPDF" class="pdf">Descargar PDF (0)</button>
+    <span id="progreso"></span>
+  </div>
+
   <table class="lista">
-    <thead><tr><th>Número de inventario</th><th>Estado</th><th></th></tr></thead>
+    <thead><tr>
+      <th class="col-sel"><input type="checkbox" id="selPagina" title="Seleccionar esta página"></th>
+      <th>Número de inventario</th><th>Estado</th><th></th>
+    </tr></thead>
     <tbody id="filas"></tbody>
   </table>
 
@@ -32,6 +43,11 @@
   </div>
 </div>
 
+<!-- Zona oculta donde se dibuja cada ficha antes de pasarla al PDF -->
+<div id="render" style="position:fixed;left:-20000px;top:0;width:1100px;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="js/sesion.js"></script>
 <script src="js/estados.js"></script>
 </body>
