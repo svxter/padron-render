@@ -8,6 +8,10 @@ const cajas = { 1: $('caja1'), 2: $('caja2'), 3: $('caja3') };
 const fotos = { 1: {}, 2: {}, 3: {} };   // { url, blob, manual }
 const ESTADOS = ['BUENO', 'REGULAR', 'MALO', 'INSERVIBLE'];
 let bienActual = null;
+let descActual = null;       // tipo de bien cuyas fotos 2 y 3 están en pantalla
+let modeloExiste = false;
+let etiquetaNueva = false;   // la foto 1 se subió para el bien que se va a cargar
+let worker = null;
 
 async function guardarEstado() {
   const sel = $('estatus_contable');
@@ -17,18 +21,14 @@ async function guardarEstado() {
   fd.append('estado', sel.value);
   try {
     const r = await fetch('php/guardar_estado.php', { method: 'POST', body: fd });
-    if (r.status === 401) { location.href = 'index.php'; return; }
+    if (r.status === 401) { location.href = 'index.html'; return; }
     const j = await r.json();
     msg.textContent = j.error ? j.error : (sel.value ? 'Estado «' + sel.value + '» guardado.' : 'Estado borrado.');
   } catch (e) { msg.textContent = 'No se pudo guardar el estado.'; }
 }
 $('estatus_contable').addEventListener('change', guardarEstado);
-let descActual = null;       // tipo de bien cuyas fotos 2 y 3 están en pantalla
-let modeloExiste = false;
-let etiquetaNueva = false;   // la foto 1 se subió para el bien que se va a cargar
-let worker = null;
 
-
+/* ---------- Imágenes ---------- */
 async function cargarBitmap(file) {
   try { return await createImageBitmap(file, { imageOrientation: 'from-image' }); }
   catch (e) { return await createImageBitmap(file); }
@@ -65,6 +65,33 @@ async function fotoManual(n, file) {
   ponerFoto(n, URL.createObjectURL(blob), true, blob);
 }
 
+/* ---------- NUEVO: foto de la etiqueta guardada por bien ---------- */
+// Guarda en el servidor la foto de la etiqueta con el número del bien
+async function guardarFotoEtiqueta(b) {
+  if (!fotos[1].blob) return;                 // solo si es una foto recién subida
+  const fd = new FormData();
+  fd.append('inv', b.inventario);
+  fd.append('slot', 1);
+  fd.append('foto', fotos[1].blob, 'etiqueta.jpg');
+  try {
+    const r = await fetch('php/fotos_bien.php', { method: 'POST', body: fd });
+    if (r.status === 401) { location.href = 'index.html'; return; }
+    const j = await r.json();
+    if (j.error) { msg.textContent = j.error; return; }
+    fotos[1].blob = null;                     // ya quedó guardada
+  } catch (e) { msg.textContent = 'No se pudo guardar la foto de la etiqueta.'; }
+}
+
+// Si el bien ya tiene una etiqueta guardada y no hay otra en pantalla, la muestra
+async function cargarEtiquetaGuardada(b) {
+  if (fotos[1].url) return;
+  try {
+    const r = await fetch('php/fotos_bien.php?inv=' + encodeURIComponent(b.inventario));
+    const f = await r.json();
+    if (f && f[1]) ponerFoto(1, f[1], false);
+  } catch (e) {}
+}
+
 /* ---------- Llenar la ficha ---------- */
 const fmtFecha = f => f ? f.split('-').reverse().join('/') : '';
 const fmtMonto = m => m ? Number(m).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }) : '';
@@ -75,9 +102,11 @@ function vaciarCampos() {
 
 async function rellenar(b) {
   bienActual = b;
-   
+
+  // Si el bien ya tiene estado guardado se muestra; si no, se aplica el que ya elegiste en el lote
   if (ESTADOS.includes(b.estado_bien)) $('estatus_contable').value = b.estado_bien;
   else if ($('estatus_contable').value) await guardarEstado();
+
   campos.forEach(c => $('f_' + c).textContent = b[c] ?? '');
   if (!b.organo_superior) $('f_organo_superior').textContent = 'Secretaría de Bienestar e Inclusión Social';
   $('f_ubicacion').textContent = [b.edificio, b.nivel, b.local].filter(Boolean).join(' / ') || 'Casa del Pueblo';
@@ -91,12 +120,13 @@ async function rellenar(b) {
     ponerFoto(3, null, false);
   }
   await cargarModelo(b.descripcion);
+  await cargarEtiquetaGuardada(b);            // NUEVO
 }
 
 async function cargarModelo(desc) {
   try {
     const r = await fetch('php/fotos_modelo.php?descripcion=' + encodeURIComponent(desc));
-    if (r.status === 401) { location.href = 'index.php'; return; }
+    if (r.status === 401) { location.href = 'index.html'; return; }
     const m = await r.json();
     modeloExiste = !!(m && m.frente);
     if (modeloExiste) {
@@ -114,12 +144,15 @@ async function buscar() {
   if (!inv) { msg.textContent = 'Escribe un número de inventario.'; return; }
   try {
     const r = await fetch('php/buscar.php?inv=' + encodeURIComponent(inv));
-    if (r.status === 401) { location.href = 'index.php'; return; }
+    if (r.status === 401) { location.href = 'index.html'; return; }
     const b = await r.json();
     if (b.error) { vaciarCampos(); bienActual = null; actualizarAcciones(); msg.textContent = b.error; return; }
+
     // La foto de etiqueta de otro bien no debe quedarse
+    const traiaEtiqueta = etiquetaNueva;      // NUEVO
     if (etiquetaNueva) etiquetaNueva = false; else ponerFoto(1, null, false);
     await rellenar(b);
+    if (traiaEtiqueta) await guardarFotoEtiqueta(b);   // NUEVO
   } catch (e) {
     msg.textContent = 'No se pudo consultar. Revisa que Apache y MySQL estén encendidos.';
   }
@@ -154,7 +187,7 @@ function candidatos(texto) {
 async function buscarLista(cands) {
   if (!cands.length) return null;
   const r = await fetch('php/buscar_lista.php?inv=' + encodeURIComponent(cands.join(',')));
-  if (r.status === 401) { location.href = 'index.php'; return null; }
+  if (r.status === 401) { location.href = 'index.html'; return null; }
   const filas = await r.json();
   if (!Array.isArray(filas)) return null;
   for (const c of cands) {
@@ -185,6 +218,7 @@ async function subirEtiqueta(file) {
       $('inv').value = bien.inventario;
       etiquetaNueva = false;
       await rellenar(bien);
+      await guardarFotoEtiqueta(bien);        // NUEVO: la etiqueta queda guardada con su bien
       msg.textContent = '';
     } else {
       if (cands[0]) $('inv').value = cands[0];
@@ -234,7 +268,7 @@ $('btnGuardarModelo').onclick = async () => {
   msg.textContent = 'Guardando fotos…';
   try {
     const r = await fetch('php/fotos_modelo.php', { method: 'POST', body: fd });
-    if (r.status === 401) { location.href = 'index.php'; return; }
+    if (r.status === 401) { location.href = 'index.html'; return; }
     const j = await r.json();
     if (j.error) { msg.textContent = j.error; return; }
     fotos[2].manual = false; fotos[3].manual = false;

@@ -1,5 +1,5 @@
 const $ = id => document.getElementById(id);
-const ETIQUETAS = { BUENO:'Bueno', REGULAR:'Regular', MALO:'Malo', INSERVIBLE:'Inservible', SIN:'Sin estado' };
+const ETIQUETAS = { BUENO:'Bueno', REGULAR:'Regular', MALO:'Malo', BAJA:'Baja', SIN:'Sin estado' };
 
 let actual = 'BUENO';
 let pagina = 1;
