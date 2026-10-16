@@ -3,7 +3,7 @@ const msg = $('mensaje');
 
 const campos = ['inventario','descripcion','marca','modelo','serie','material','color','agrupados',
   'organo_superior','unidad_presupuestal','adscripcion','cog','cve_armonizada','patrimoniable'];
-const ESTADOS = ['BUENO', 'REGULAR', 'MALO', 'BAJA'];
+const ESTADOS = ['BUENO', 'REGULAR', 'MALO', 'INSERVIBLE'];
 let bienActual = null;
 let abiertaDesdeLista = false;   // true cuando se abre con el botón "Ver ficha"
 
