@@ -13,7 +13,7 @@ $pdo = conectar();
 asegurarEstado($pdo);
 
 
-$conteos = ['BUENO' => 0, 'REGULAR' => 0, 'MALO' => 0, 'BAJA' => 0, 'SIN' => 0];
+$conteos = ['BUENO' => 0, 'REGULAR' => 0, 'MALO' => 0, 'INSERVIBLE' => 0, 'SIN' => 0];
 foreach ($pdo->query("SELECT COALESCE(estado_bien, 'SIN') AS e, COUNT(*) AS n FROM bienes GROUP BY e") as $f) {
     if (isset($conteos[$f['e']])) $conteos[$f['e']] = (int) $f['n'];
 }
